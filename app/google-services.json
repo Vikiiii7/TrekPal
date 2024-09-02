@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "796243869983",
+    "firebase_url": "https://trekpal-1dec5-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "trekpal-1dec5",
+    "storage_bucket": "trekpal-1dec5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796243869983:android:1d070e262f9ac64440702a",
+        "android_client_info": {
+          "package_name": "com.example.trekpal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4zoXAsx_fKh_8QmyrJ74psrcd26YohD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/house"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/navigation_weather"
+        android:icon="@drawable/partly_cloudy_day"
+        android:title="Weather" />
+
+    <item
+        android:id="@+id/navigation_emergency"
+        android:icon="@drawable/e911_emergency"
+        android:title="Emergency" />
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/account_circle"
+        android:title="Profile" />
+
+</menu>

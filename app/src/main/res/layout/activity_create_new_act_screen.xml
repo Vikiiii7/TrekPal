@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/group_16"
+    tools:context=".CreateNewActScreen">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="253dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="79dp"
+        android:layout_marginBottom="604dp"
+        android:fontFamily="@font/manrope_extrabold"
+        android:text="Create New Activity"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="296dp"
+        android:backgroundTint="#F45151"
+        android:fontFamily="@font/manrope_extrabold"
+        android:text="Cancel"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="57dp"
+        android:layout_marginEnd="257dp"
+        android:fontFamily="@font/manrope_extrabold"
+        android:text="Activity Name :"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <EditText
+        android:id="@+id/etActName"
+        android:layout_width="334dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="39dp"
+        android:background="@drawable/rectangle_24"
+        android:ems="10"
+        android:fontFamily="@font/manrope_bold"
+        android:hint="Enter Activity Name"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="223dp"
+        android:fontFamily="@font/manrope_extrabold"
+        android:text="Activity Description :"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etActName" />
+
+    <EditText
+        android:id="@+id/etActDesc"
+        android:layout_width="334dp"
+        android:layout_height="113dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="39dp"
+        android:background="@drawable/rectangle_25"
+        android:ems="10"
+        android:fontFamily="@font/manrope_bold"
+        android:gravity="start|top"
+        android:hint="Enter Activity Description"
+        android:inputType="textMultiLine"
+        android:padding="10dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="264dp"
+        android:fontFamily="@font/manrope_extrabold"
+        android:text="Activity Type :"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etActDesc" />
+
+    <Spinner
+        android:id="@+id/actTypeSpinner"
+        android:layout_width="299dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="56dp"
+        android:background="@drawable/group_37"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+    <ImageButton
+        android:id="@+id/btnCreateAct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="112dp"
+        android:layout_marginBottom="97dp"
+        android:background="#00FAF2F2"
+        android:contentDescription="CreateActBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actTypeSpinner"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/group_26" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

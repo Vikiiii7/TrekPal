@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/group_16"
+    tools:context=".MainActivity">
+
+    <!-- Dimming background overlay -->
+
+    <View
+        android:id="@+id/dimmingView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#99000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Main Floating Action Button -->
+
+    <!-- Sub Floating Action Button for Logout -->
+    <!--android:src="@drawable/ic_logout"-->
+
+    <!-- Sub Floating Action Button for Create New Activity -->
+    <!--android:src="@drawable/ic_create" -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnFloatTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:clickable="true"
+        android:contentDescription="FABtp"
+        android:focusable="true"
+        android:foreground="@drawable/trekpal_latest_logo__1__removebg_preview_2"
+        app:backgroundTint="#00FFFFFF"
+        app:elevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="244dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:contentDescription="Logout"
+        android:focusable="true"
+        android:foreground="@drawable/group_34"
+        android:visibility="gone"
+        app:backgroundTint="#00FFFFFF"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnFloatTP"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCreateActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="88dp"
+        android:clickable="true"
+        android:contentDescription="Create New Activity"
+        android:focusable="true"
+        android:foreground="@drawable/group_35"
+        android:visibility="gone"
+        app:backgroundTint="#00FFFFFF"
+        app:elevation="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnFloatTP" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="400dp"
+        android:layout_height="737dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rectangle_6"
+        app:elevation="10dp"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
