@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Handle create new activity logic
                 Intent intent = new Intent(MainActivity.this, CreateNewActScreen.class);
+                intent.putExtra("uniqueCode", uniqueCode);
                 startActivity(intent);
                 closeFABMenu();
             }
@@ -98,17 +99,22 @@ public class MainActivity extends AppCompatActivity {
 
                 int itemId = item.getItemId();
                 if (itemId == R.id.navigation_home) {
-                    selectedFragment = new HomeFragment();
+
+                    // In MainActivity.java
+                    HomeFragment homeFragment = new HomeFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("uniqueCode", uniqueCode);
+                    homeFragment.setArguments(bundle);
+                    selectedFragment = homeFragment;
+
+
                 } else if (itemId == R.id.navigation_weather) {
-                    intent = new Intent(MainActivity.this, WeatherScreen.class);
-                    intent.putExtra("username", MainActivity.this.username);
-                    startActivity(intent);
-                    return true;
-                } else if (itemId == R.id.navigation_emergency) {
-                    intent = new Intent(MainActivity.this, EmergencyScreen.class);
-                    intent.putExtra("username", MainActivity.this.username);
-                    startActivity(intent);
-                    return true;
+                    WeatherFragment weatherFragment = new WeatherFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("uniqueCode", MainActivity.this.uniqueCode);
+                    weatherFragment.setArguments(bundle);
+                    selectedFragment = weatherFragment;
+
                 } else if (itemId == R.id.navigation_profile) {
                     ProfileFragment profileFragment = new ProfileFragment();
                     Bundle bundle = new Bundle();

@@ -12,11 +12,6 @@
         android:title="Weather" />
 
     <item
-        android:id="@+id/navigation_emergency"
-        android:icon="@drawable/e911_emergency"
-        android:title="Emergency" />
-
-    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/account_circle"
         android:title="Profile" />

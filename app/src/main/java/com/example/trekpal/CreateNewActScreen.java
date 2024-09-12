@@ -14,10 +14,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class CreateNewActScreen extends AppCompatActivity {
 
     private EditText etActivityName, etActivityDesc;
     private String selectedActivityType;
+    private FirebaseFirestore db;
+    private String uniqueCode; // To store the logged-in user's unique code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,12 @@ public class CreateNewActScreen extends AppCompatActivity {
         Spinner actTypeSpinner = findViewById(R.id.actTypeSpinner);
         ImageButton createActivityButton = findViewById(R.id.btnCreateAct);
         Button cancelButton = findViewById(R.id.button);
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Get the uniqueCode passed from MainActivity
+        uniqueCode = getIntent().getStringExtra("uniqueCode");
 
         // Setting up the Spinner options
         String[] activityTypes = {"Hiking", "Bike Ride", "Car Ride", "Trekking", "Kayaking", "Camping"};
@@ -60,13 +73,34 @@ public class CreateNewActScreen extends AppCompatActivity {
             } else if (wordCount(activityDescription) > 50) {
                 Toast.makeText(CreateNewActScreen.this, "Activity Description cannot exceed 50 words", Toast.LENGTH_SHORT).show();
             } else {
-                // Logic to create the new activity (e.g., save to Firestore or pass to the next screen)
-                Toast.makeText(CreateNewActScreen.this, "Activity Created: " + activityName, Toast.LENGTH_SHORT).show();
+                // Prepare the data to insert
+                Map<String, Object> activityData = new HashMap<>();
+                activityData.put("activityName", activityName);
+                activityData.put("actDescription", activityDescription);
+                activityData.put("actType", selectedActivityType);
 
-                // Example: Return to MainActivity or wherever you want to navigate
-                Intent intent = new Intent(CreateNewActScreen.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Close the CreateNewActScreen activity
+                // Add actParticipants with the uniqueCode
+                Map<String, Object> participants = new HashMap<>();
+                participants.put("uniqueCode", uniqueCode);
+                activityData.put("actParticipants", participants);
+
+                // Use activity name as the document ID inside the selected activity type collection
+                db.collection("activityType")
+                        .document(selectedActivityType)
+                        .collection("activities")
+                        .document(activityName)
+                        .set(activityData)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(CreateNewActScreen.this, "Activity Created Successfully", Toast.LENGTH_SHORT).show();
+                            // Navigate to the main activity or another screen
+                            Intent intent = new Intent(CreateNewActScreen.this, MainActivity.class);
+                            intent.putExtra("uniqueCode", uniqueCode);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(CreateNewActScreen.this, "Error creating activity", Toast.LENGTH_SHORT).show();
+                        });
             }
         });
 
