@@ -13,9 +13,16 @@ import java.util.List;
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHolder> {
 
     private List<Activity> activityList;
+    private OnActivityClickListener listener;
 
-    public ActivityAdapter(List<Activity> activityList) {
+
+    public ActivityAdapter(List<Activity> activityList, OnActivityClickListener listener) {
         this.activityList = activityList;
+        this.listener = listener;
+    }
+
+    public interface OnActivityClickListener {
+        void onActivityClick(Activity activity);
     }
 
     @NonNull
@@ -30,6 +37,10 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
         Activity activity = activityList.get(position);
         holder.tvActName.setText(activity.getActivityName());
         holder.tvActType.setText(activity.getActivityType());
+        holder.tvActDate.setText(activity.getActivityDate());
+
+        // Set click listener for each activity item
+        holder.itemView.setOnClickListener(v -> listener.onActivityClick(activity));
     }
 
     @Override
@@ -40,11 +51,13 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvActName;
         public TextView tvActType;
+        public TextView tvActDate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvActName = itemView.findViewById(R.id.tvActName);
             tvActType = itemView.findViewById(R.id.tvActType);
+            tvActDate = itemView.findViewById(R.id.tvActDate);
         }
     }
 }

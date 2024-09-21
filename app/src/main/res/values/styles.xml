@@ -1,0 +1,12 @@
+<resources>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+    </style>
+
+    <!-- Custom style for Popup Menu -->
+    <style name="CustomPopupMenu" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColor">@color/black</item> <!-- Set text color to black -->
+        <item name="android:background">@color/white</item> <!-- Set background color to white -->
+    </style>
+</resources>

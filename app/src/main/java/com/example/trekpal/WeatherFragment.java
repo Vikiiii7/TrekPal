@@ -60,7 +60,7 @@ public class WeatherFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private final int REQUEST_LOCATION = 100;
     private final String API_KEY = "qmiW42oVNaGlAVw7Wt0qRkfCu6eIMAGu";
-    private final String BASE_URL = "https://api.tomorrow.io/v4/timelines?location=YOUR_LAT,YOUR_LON&fields=temperature,humidity,windSpeed,precipitationIntensity&units=metric&timesteps=1h&apikey=" + API_KEY;
+    private final String BASE_URL = "https://api.tomorrow.io/v4/timelines?location=YOUR_LAT,YOUR_LON&fields=temperature,humidity,windSpeed,precipitationIntensity,weatherCode&units=metric&timesteps=1h&apikey=" + API_KEY;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +89,36 @@ public class WeatherFragment extends Fragment {
 
         return view;
     }
+
+    private String getWeatherTypeFromCode(int weatherCode) {
+        switch (weatherCode) {
+            case 1000: return "Clear, Sunny";
+            case 1100: return "Mostly Clear";
+            case 1101: return "Partly Cloudy";
+            case 1102: return "Mostly Cloudy";
+            case 1001: return "Cloudy";
+            case 2000: return "Fog";
+            case 2100: return "Light Fog";
+            case 4000: return "Drizzle";
+            case 4001: return "Rain";
+            case 4200: return "Light Rain";
+            case 4201: return "Heavy Rain";
+            case 5000: return "Snow";
+            case 5001: return "Flurries";
+            case 5100: return "Light Snow";
+            case 5101: return "Heavy Snow";
+            case 6000: return "Freezing Drizzle";
+            case 6001: return "Freezing Rain";
+            case 6200: return "Light Freezing Rain";
+            case 6201: return "Heavy Freezing Rain";
+            case 7000: return "Ice Pellets";
+            case 7101: return "Heavy Ice Pellets";
+            case 7102: return "Light Ice Pellets";
+            case 8000: return "Thunderstorm";
+            default: return "Unknown";
+        }
+    }
+
 
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
@@ -318,12 +348,18 @@ public class WeatherFragment extends Fragment {
                 double humidity = values.getDouble("humidity");
                 double windSpeed = values.getDouble("windSpeed");
                 int precipitationIntensity = values.getInt("precipitationIntensity");
+                int weatherCode = values.getInt("weatherCode"); // Get the weatherCode
 
                 // Update UI elements with fetched data
                 tvTemperature.setText(temperature + " °C");
                 tvHumidity.setText(humidity + " %");
                 tvWindSpeed.setText(windSpeed + " km/h");
                 tvPrecipitation.setText(precipitationIntensity + " %");
+
+                // Use the weather code to get and display the weather type
+                String weatherType = getWeatherTypeFromCode(weatherCode);
+                TextView tvWeatherType = getView().findViewById(R.id.tvWeatherType); // Assuming you have a TextView for weather type
+                tvWeatherType.setText(weatherType);
 
             } catch (JSONException e) {
                 e.printStackTrace();

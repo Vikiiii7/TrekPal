@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menuGroupDetails"
+        android:title="Group Details"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuAddMembers"
+        android:title="Add Group Members"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_open_screen3"
+        android:title="Open Screen 3"
+        app:showAsAction="never" />
+</menu>
