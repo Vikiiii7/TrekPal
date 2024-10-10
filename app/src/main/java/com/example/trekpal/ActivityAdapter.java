@@ -25,10 +25,23 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
         void onActivityClick(Activity activity);
     }
 
+
+    @Override
+    public int getItemViewType(int position) {
+        return activityList.get(position).isInvitation() ? 1 : 0;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_activity, parent, false);
+        View view;
+        if (viewType == 1) {
+            // Inflate invitation layout
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_groupinvitation, parent, false);
+        } else {
+            // Inflate regular activity layout
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_activity, parent, false);
+        }
         return new ViewHolder(view);
     }
 

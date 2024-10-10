@@ -27,6 +27,7 @@ public class GroupChatMain extends AppCompatActivity {
     private ArrayList<String> customMessages = new ArrayList<>();
     private ChatAdapter chatAdapter;
     private static final int MAX_CUSTOM_MESSAGES = 3;
+    private String activityName, selectedActivityType, activityDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +35,9 @@ public class GroupChatMain extends AppCompatActivity {
         setContentView(R.layout.activity_group_chat_main);
 
         // Retrieve activity details from intent
-        String activityName = getIntent().getStringExtra("activityName");
-        String activityType = getIntent().getStringExtra("activityType");
-        String activityDate = getIntent().getStringExtra("activityDate");
+        activityName = getIntent().getStringExtra("activityName");
+        selectedActivityType = getIntent().getStringExtra("activityType");
+        activityDate = getIntent().getStringExtra("activityDate");
 
         // Set up the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -97,6 +98,9 @@ public class GroupChatMain extends AppCompatActivity {
         } else if (id == R.id.menuAddMembers) {
             // Navigate to AddMemberScreen
             Intent intent = new Intent(GroupChatMain.this, AddMemberScreen.class);
+            intent.putExtra("activityName", activityName);
+            intent.putExtra("activityType", selectedActivityType); // Pass the selected activity type
+
             startActivity(intent);
 
             return true;

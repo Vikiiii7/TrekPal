@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@drawable/group_16">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -22,9 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="60dp"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/messageInputLayout"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        android:scrollbars="vertical" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <!-- Quick Message Section with Add Button -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,9 +41,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/addMessageButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/addMessageButton" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Add Message Button -->
         <ImageButton
@@ -51,9 +51,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@android:drawable/ic_input_add"
+            android:contentDescription="Add Custom Message"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/messageContainer"
-            android:contentDescription="Add Custom Message" />
+            app:layout_constraintTop_toTopOf="@id/messageContainer" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -63,6 +63,6 @@
         app:itemIconSize="35dp"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
-        app:menu="@menu/bottom_nav_groupchat"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_groupchat" />
 </androidx.constraintlayout.widget.ConstraintLayout>

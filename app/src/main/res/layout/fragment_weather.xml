@@ -158,13 +158,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/etLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="74dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="75dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="94dp"
         android:background="@drawable/rectangle_36"
         android:ems="10"
         android:fontFamily="@font/manrope_extrabold"
@@ -174,6 +174,7 @@
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etDate" />
 
@@ -192,16 +193,18 @@
 
     <TextView
         android:id="@+id/tvWeatherType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="148dp"
+        android:layout_width="275dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="107dp"
         android:fontFamily="@font/manrope_bold"
         android:text="Weather Type :"
+        android:textAlignment="textStart"
         android:textColor="#000000"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <TextView
@@ -218,6 +221,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/searchLocationBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/search"
+        android:contentDescription="searchBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/etLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/etLocation"
+        app:layout_constraintTop_toTopOf="@+id/etLocation" />
 
     <!-- Add more fields as needed -->
 

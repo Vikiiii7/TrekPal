@@ -5,16 +5,18 @@ public class Activity {
     private String actType;
     private String activityDate;
     private String creatorUniqueCode; // Store creator's unique code
+    private boolean isInvitation;
 
     public Activity() {
         // Firestore requires an empty constructor
     }
 
-    public Activity(String activityName, String actType, String activityDate, String creatorUniqueCode) {
+    public Activity(String activityName, String actType, String activityDate, String creatorUniqueCode, boolean isInvitation) {
         this.activityName = activityName;
         this.actType = actType;
         this.activityDate = activityDate;
         this.creatorUniqueCode = creatorUniqueCode;
+        this.isInvitation = isInvitation;
     }
 
     public String getActivityName() {
@@ -31,5 +33,9 @@ public class Activity {
 
     public String getCreatorUniqueCode() {
         return creatorUniqueCode;
+    }
+
+    public boolean isInvitation() {
+        return isInvitation;
     }
 }

@@ -2,7 +2,6 @@ package com.example.trekpal;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -11,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,15 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,28 +34,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.util.Log;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
-import com.google.android.gms.common.api.ResolvableApiException;
-
-
+import android.location.Address;
+import android.location.Geocoder;
 
 public class WeatherFragment extends Fragment {
 
-    private TextView tvTemperature, tvHumidity, tvWindSpeed, tvPrecipitation, tvDay;
+    private TextView tvTemperature, tvHumidity, tvWindSpeed, tvPrecipitation, tvDay, tvWeatherType;
     private EditText etLocation, etDate;
     private FusedLocationProviderClient fusedLocationClient;
+    private ImageButton btnSearchLocation; // Add button for location search
     private final int REQUEST_LOCATION = 100;
-    private final String API_KEY = "qmiW42oVNaGlAVw7Wt0qRkfCu6eIMAGu";
-    private final String BASE_URL = "https://api.tomorrow.io/v4/timelines?location=YOUR_LAT,YOUR_LON&fields=temperature,humidity,windSpeed,precipitationIntensity,weatherCode&units=metric&timesteps=1h&apikey=" + API_KEY;
+    private final String API_KEY = "255e65ce00504ff3b5925741243009";
+    private final String BASE_URL = "https://api.weatherapi.com/v1/";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,6 +64,9 @@ public class WeatherFragment extends Fragment {
         tvDay = view.findViewById(R.id.tvDay);
         etDate = view.findViewById(R.id.etDate);
         etLocation = view.findViewById(R.id.etLocation);
+        tvWeatherType = view.findViewById(R.id.tvWeatherType);
+        btnSearchLocation = view.findViewById(R.id.searchLocationBtn); // Initialize search button
+
 
         // Initialize location client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -87,45 +80,27 @@ public class WeatherFragment extends Fragment {
         // Check for location permission and fetch weather
         checkLocationPermissionAndFetchWeather();
 
+        // Set up search button click listener
+        btnSearchLocation.setOnClickListener(v -> {
+            String locationName = etLocation.getText().toString();
+            if (!locationName.isEmpty()) {
+                fetchWeatherForDateAndLocation(new Date()); // Use today's date for location search
+            } else {
+                Toast.makeText(getContext(), "Please enter a location to search", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         return view;
     }
 
-    private String getWeatherTypeFromCode(int weatherCode) {
-        switch (weatherCode) {
-            case 1000: return "Clear, Sunny";
-            case 1100: return "Mostly Clear";
-            case 1101: return "Partly Cloudy";
-            case 1102: return "Mostly Cloudy";
-            case 1001: return "Cloudy";
-            case 2000: return "Fog";
-            case 2100: return "Light Fog";
-            case 4000: return "Drizzle";
-            case 4001: return "Rain";
-            case 4200: return "Light Rain";
-            case 4201: return "Heavy Rain";
-            case 5000: return "Snow";
-            case 5001: return "Flurries";
-            case 5100: return "Light Snow";
-            case 5101: return "Heavy Snow";
-            case 6000: return "Freezing Drizzle";
-            case 6001: return "Freezing Rain";
-            case 6200: return "Light Freezing Rain";
-            case 6201: return "Heavy Freezing Rain";
-            case 7000: return "Ice Pellets";
-            case 7101: return "Heavy Ice Pellets";
-            case 7102: return "Light Ice Pellets";
-            case 8000: return "Thunderstorm";
-            default: return "Unknown";
-        }
-    }
-
-
     private void showDatePickerDialog() {
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(); // Current date
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        // Create DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (view, selectedYear, selectedMonth, selectedDay) -> {
             // Format the date and update the EditText
             calendar.set(selectedYear, selectedMonth, selectedDay);
@@ -139,8 +114,18 @@ public class WeatherFragment extends Fragment {
 
         }, year, month, day);
 
+        // Set minimum date to today
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
+        // Set maximum date to 7 days in the future
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.add(Calendar.DAY_OF_MONTH, 7);
+        datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+
+        // Show the DatePickerDialog
         datePickerDialog.show();
     }
+
 
     private void fetchWeatherForDateAndLocation(Date date) {
         String locationName = etLocation.getText().toString();
@@ -155,14 +140,12 @@ public class WeatherFragment extends Fragment {
         List<Address> addresses;
 
         try {
-            // Get a list of addresses corresponding to the location name
             addresses = geocoder.getFromLocationName(locationName, 1);
             if (addresses == null || addresses.isEmpty()) {
                 Toast.makeText(getContext(), "Unable to fetch location coordinates", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Get the first result
             Address address = addresses.get(0);
             double latitude = address.getLatitude();
             double longitude = address.getLongitude();
@@ -171,13 +154,9 @@ public class WeatherFragment extends Fragment {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String formattedDate = dateFormat.format(date);
 
-            // Prepare the API URL with latitude, longitude, and date
-            String apiUrl = BASE_URL.replace("YOUR_LAT", String.valueOf(latitude))
-                    .replace("YOUR_LON", String.valueOf(longitude))
-                    .replace("1h", "1d");  // For daily forecast
-
-            // Add date to the URL if supported by the API
-            apiUrl += "&startTime=" + formattedDate;
+            // Prepare the API URL for forecast
+            String apiUrl = BASE_URL + "forecast.json?key=" + API_KEY + "&q=" + latitude + "," + longitude + "&dt=" + formattedDate;
+            Log.d("WeatherFragment", "API URL: " + apiUrl); // Log the API URL
 
             // Fetch weather data using the constructed API URL
             new FetchWeatherTask().execute(apiUrl);
@@ -188,182 +167,139 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    private void fetchLocationName(Location location) {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                String locality = address.getLocality(); // City or region
-                String country = address.getCountryName(); // Country
-                String displayLocation = locality + ", " + country; // Combine city and country
-
-                etLocation.setText(displayLocation);
-            } else {
-                etLocation.setText("No address found");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            etLocation.setText("Geocoder service not available");
-        }
-    }
-
-
     private void setCurrentDayAndDate() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
+
+        // Get the device's current timezone
+        TimeZone deviceTimeZone = Calendar.getInstance().getTimeZone();
+
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+
+        // Set the timezone to the device's timezone
+        dayFormat.setTimeZone(deviceTimeZone);
+        dateFormat.setTimeZone(deviceTimeZone);
 
         String currentDay = dayFormat.format(calendar.getTime());
         String currentDate = dateFormat.format(calendar.getTime());
 
-        tvDay.setText(currentDay); // Update the UI to display the day
-        etDate.setText(currentDate);
-
+        // Set the day and date on the UI
+        tvDay.setText(currentDay); // Update the UI to display the current day
+        etDate.setText(currentDate); // Update the EditText to display the current date
     }
+
 
     private void checkLocationPermissionAndFetchWeather() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
-            checkGpsStatusAndFetchLocation();
+            getLocationAndFetchWeather();
         }
     }
 
-    private void checkGpsStatusAndFetchLocation() {
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10000)
-                .setFastestInterval(5000);
+    private void fetchLocationName(Location location) {
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                String cityName = address.getLocality();
+                String regionName = address.getAdminArea(); // State or region
+                String countryName = address.getCountryName();
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-        SettingsClient client = LocationServices.getSettingsClient(getActivity());
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-
-        task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                // GPS is enabled, fetch location
-                getLocationAndFetchWeather();
+                // Format the location name, e.g., "Penang, Malaysia"
+                String locationName = cityName + ", " + countryName;
+                etLocation.setText(locationName);  // Set the location name in the EditText field
+            } else {
+                Toast.makeText(getContext(), "Unable to fetch location name", Toast.LENGTH_SHORT).show();
             }
-        });
-
-        task.addOnFailureListener(getActivity(), e -> {
-            if (e instanceof ResolvableApiException) {
-                try {
-                    // Show dialog to ask user to enable GPS
-                    ((ResolvableApiException) e).startResolutionForResult(getActivity(), REQUEST_LOCATION);
-                } catch (IntentSender.SendIntentException sendEx) {
-                    sendEx.printStackTrace();
-                }
-            }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Geocoder service not available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void getLocationAndFetchWeather() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-            return;
-        }
-
-        fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), location -> {
                 if (location != null) {
-                    // Use the location coordinates to fetch weather
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    String apiUrl = BASE_URL.replace("YOUR_LAT", String.valueOf(latitude))
-                            .replace("YOUR_LON", String.valueOf(longitude));
-                    new FetchWeatherTask().execute(apiUrl);
-
-                    // Fetch and display location name
                     fetchLocationName(location);
+                    fetchWeatherForDateAndLocation(new Date());
+                    setCurrentDayAndDate(); // Call this to update the date and day
                 } else {
-                    Toast.makeText(getContext(), "Unable to detect location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Unable to get current location", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkGpsStatusAndFetchLocation();
-            } else {
-                Toast.makeText(getContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(getContext(), "Failed to fetch location: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("WeatherFragment", "Location fetch error: " + e.getMessage());
+            });
         }
     }
+
 
     private class FetchWeatherTask extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(String... strings) {
-            StringBuilder result = new StringBuilder();
+        protected String doInBackground(String... urls) {
             try {
-                URL url = new URL(strings[0]);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                URL url = new URL(urls[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
                 String line;
+
                 while ((line = reader.readLine()) != null) {
-                    result.append(line);
+                    response.append(line);
                 }
+
                 reader.close();
+                return response.toString();
+
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e("WeatherFragment", "Error fetching weather data: " + e.getMessage()); // Log error
+                return null;
             }
-            return result.toString();
         }
 
         @Override
         protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            Log.d("API Response", result);
-
-            if (result == null || result.isEmpty()) {
-                Toast.makeText(getContext(), "Failed to fetch weather data. Empty response.", Toast.LENGTH_SHORT).show();
-                return;
+            if (result != null) {
+                parseWeatherResponse(result);
+            } else {
+                Toast.makeText(getContext(), "Failed to fetch weather data", Toast.LENGTH_SHORT).show();
+                Log.e("WeatherFragment", "Weather data result is null"); // Log null result
             }
+        }
 
+        private void parseWeatherResponse(String response) {
             try {
-                JSONObject jsonObject = new JSONObject(result);
-                JSONObject data = jsonObject.getJSONObject("data");
-                JSONArray timelines = data.getJSONArray("timelines");
-                JSONObject firstTimeline = timelines.getJSONObject(0);
-                JSONArray intervals = firstTimeline.getJSONArray("intervals");
-                JSONObject firstInterval = intervals.getJSONObject(0);
-                JSONObject values = firstInterval.getJSONObject("values");
+                JSONObject jsonObject = new JSONObject(response);
+                JSONObject currentWeather = jsonObject.getJSONObject("current");
+                JSONObject condition = currentWeather.getJSONObject("condition");
 
-                // Extract the required values
-                int temperature = values.getInt("temperature");
-                double humidity = values.getDouble("humidity");
-                double windSpeed = values.getDouble("windSpeed");
-                int precipitationIntensity = values.getInt("precipitationIntensity");
-                int weatherCode = values.getInt("weatherCode"); // Get the weatherCode
+                // Extract weather data
+                double temperature = currentWeather.getDouble("temp_c");
+                double windSpeed = currentWeather.getDouble("wind_kph");
+                double humidity = currentWeather.getDouble("humidity");
+                double precipitation = currentWeather.getDouble("precip_mm");
+                String weatherType = condition.getString("text");
 
-                // Update UI elements with fetched data
-                tvTemperature.setText(temperature + " °C");
-                tvHumidity.setText(humidity + " %");
-                tvWindSpeed.setText(windSpeed + " km/h");
-                tvPrecipitation.setText(precipitationIntensity + " %");
-
-                // Use the weather code to get and display the weather type
-                String weatherType = getWeatherTypeFromCode(weatherCode);
-                TextView tvWeatherType = getView().findViewById(R.id.tvWeatherType); // Assuming you have a TextView for weather type
+                // Update UI elements with the fetched data
+                tvTemperature.setText(String.format(Locale.getDefault(), "%.1f°C", temperature));
+                tvWindSpeed.setText(String.format(Locale.getDefault(), "%.1f kph", windSpeed));
+                tvHumidity.setText(String.format(Locale.getDefault(), "%.1f%%", humidity));
+                tvPrecipitation.setText(String.format(Locale.getDefault(), "%.1f mm", precipitation));
                 tvWeatherType.setText(weatherType);
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Failed to parse weather data", Toast.LENGTH_SHORT).show();
+                Log.e("WeatherFragment", "Error parsing weather response: " + e.getMessage()); // Log parsing error
             }
         }
     }

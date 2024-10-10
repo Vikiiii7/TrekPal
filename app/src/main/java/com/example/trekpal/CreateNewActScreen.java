@@ -96,8 +96,13 @@ public class CreateNewActScreen extends AppCompatActivity {
                 selectedDate = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
                 etDatePicker.setText(selectedDate);
             }, year, month, day);
+
+            // Set the minimum date to the current date to prevent past dates
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
             datePickerDialog.show();
         });
+
 
         // Time picker logic
         etTimePicker.setOnClickListener(v -> {
@@ -112,46 +117,50 @@ public class CreateNewActScreen extends AppCompatActivity {
             timePickerDialog.show();
         });
 
-        // Handle the create activity button click
         createActivityButton.setOnClickListener(view -> {
             String activityName = etActivityName.getText().toString().trim();
             String activityDescription = etActivityDesc.getText().toString().trim();
 
-            if (activityName.isEmpty() || activityDescription.isEmpty() || selectedActivityType == null || selectedDate == null || selectedTime == null|| selectedWeatherType == null) {
+            if (activityName.isEmpty() || activityDescription.isEmpty() || selectedActivityType == null || selectedDate == null || selectedTime == null || selectedWeatherType == null) {
                 Toast.makeText(CreateNewActScreen.this, "Please fill in all the fields", Toast.LENGTH_SHORT).show();
             } else if (activityName.length() > 20) {
                 Toast.makeText(CreateNewActScreen.this, "Activity Name cannot exceed 20 characters", Toast.LENGTH_SHORT).show();
             } else if (wordCount(activityDescription) > 50) {
                 Toast.makeText(CreateNewActScreen.this, "Activity Description cannot exceed 50 words", Toast.LENGTH_SHORT).show();
             } else {
-                // Prepare the data to insert
                 Map<String, Object> activityData = new HashMap<>();
                 activityData.put("activityName", activityName);
                 activityData.put("actDescription", activityDescription);
                 activityData.put("actType", selectedActivityType);
-                activityData.put("activityDate", selectedDate); // Store selected date
-                activityData.put("activityTime", selectedTime); // Store selected time
-                activityData.put("expectedWeather", selectedWeatherType); // Store selected weather
+                activityData.put("activityDate", selectedDate);
+                activityData.put("activityTime", selectedTime);
+                activityData.put("expectedWeather", selectedWeatherType);
                 activityData.put("creatorUniqueCode", uniqueCode);
 
-                // Add actParticipants with the uniqueCode
-                Map<String, Object> participants = new HashMap<>();
-                participants.put("uniqueCode", uniqueCode);
-                activityData.put("actParticipants", participants);
-
-                // Use activity name as the document ID inside the selected activity type collection
                 db.collection("activityType")
                         .document(selectedActivityType)
                         .collection("activities")
                         .document(activityName)
                         .set(activityData)
                         .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(CreateNewActScreen.this, "Activity Created Successfully", Toast.LENGTH_SHORT).show();
-                            // Navigate to the main activity or another screen
-                            Intent intent = new Intent(CreateNewActScreen.this, MainActivity.class);
-                            intent.putExtra("uniqueCode", uniqueCode);
-                            startActivity(intent);
-                            finish();
+                            // Add creator's uniqueCode to groupmembers subcollection
+                            db.collection("activityType")
+                                    .document(selectedActivityType)
+                                    .collection("activities")
+                                    .document(activityName)
+                                    .collection("groupmembers")
+                                    .document(uniqueCode)
+                                    .set(new HashMap<>())
+                                    .addOnSuccessListener(aVoid1 -> {
+                                        Toast.makeText(CreateNewActScreen.this, "Activity Created Successfully", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(CreateNewActScreen.this, MainActivity.class);
+                                        intent.putExtra("uniqueCode", uniqueCode);
+                                        startActivity(intent);
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(CreateNewActScreen.this, "Error adding creator to groupmembers", Toast.LENGTH_SHORT).show();
+                                    });
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(CreateNewActScreen.this, "Error creating activity", Toast.LENGTH_SHORT).show();
