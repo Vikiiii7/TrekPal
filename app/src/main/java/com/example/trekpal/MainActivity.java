@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences prefs = getSharedPreferences("TrekPalPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.clear(); // Clear all saved data
+                editor.apply(); // Save changes
 
                 // Redirect to login screen
                 Intent intent = new Intent(MainActivity.this, LoginScreen.class);

@@ -7,16 +7,6 @@
     android:background="@drawable/group_16"
     tools:context=".MainActivity">
 
-    <!-- Dimming background overlay -->
-
-    <!-- Main Floating Action Button -->
-
-    <!-- Sub Floating Action Button for Logout -->
-    <!--android:src="@drawable/ic_logout"-->
-
-    <!-- Sub Floating Action Button for Create New Activity -->
-    <!--android:src="@drawable/ic_create" -->
-
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="400dp"

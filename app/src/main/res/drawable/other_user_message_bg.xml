@@ -1,0 +1,11 @@
+<!-- res/drawable/other_user_message_bg.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FDB97E"/> <!-- Slightly darker blue background -->
+    <corners android:radius="16dp"/> <!-- Rounded corners -->
+    <padding
+        android:left="8dp"
+        android:top="4dp"
+        android:right="8dp"
+        android:bottom="4dp"/> <!-- Padding for the message -->
+</shape>

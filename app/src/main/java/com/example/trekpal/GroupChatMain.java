@@ -1,33 +1,20 @@
 package com.example.trekpal;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import java.util.ArrayList;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class GroupChatMain extends AppCompatActivity {
 
-    private ArrayList<String> chatMessages = new ArrayList<>();
-    private ArrayList<String> customMessages = new ArrayList<>();
-    private ChatAdapter chatAdapter;
-    private static final int MAX_CUSTOM_MESSAGES = 3;
-    private String activityName, selectedActivityType, activityDate;
+    private String activityName, selectedActivityType, uniqueCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,53 +24,73 @@ public class GroupChatMain extends AppCompatActivity {
         // Retrieve activity details from intent
         activityName = getIntent().getStringExtra("activityName");
         selectedActivityType = getIntent().getStringExtra("activityType");
-        activityDate = getIntent().getStringExtra("activityDate");
+        uniqueCode = getIntent().getStringExtra("uniqueCode");
 
         // Set up the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(activityName);  // Set the title of the toolbar
+            getSupportActionBar().setTitle(activityName);
         }
 
-
-        // Set up the RecyclerView
-        RecyclerView chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter(chatMessages);
-        chatRecyclerView.setAdapter(chatAdapter);
-
-
-        // Predefined default messages
-        String[] defaultMessages = {
-                "Hello, I've Reached the Destination",
-                "Need to Stop at the Nearest Stopping Point!"
-        };
-
-        // Display default messages as buttons
-        for (String message : defaultMessages) {
-            addMessageButton(message);
+        // Load ChatScreenFragment on start
+        if (savedInstanceState == null) {
+            ChatScreenFragment chatScreenFragment = new ChatScreenFragment();
+            Bundle args = new Bundle();
+            args.putString("activityName", activityName);
+            args.putString("activityType", selectedActivityType);
+            args.putString("uniqueCode", uniqueCode);
+            chatScreenFragment.setArguments(args);
+            loadFragment(chatScreenFragment);
         }
 
-        ImageButton addMessageButton = findViewById(R.id.addMessageButton);
-        addMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (customMessages.size() < MAX_CUSTOM_MESSAGES) {
-                    showAddMessageDialog();
-                } else {
-                    showLimitReachedDialog();
-                }
+        // Initialize and set up the bottom navigation bar
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_chat);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            Bundle bundle = new Bundle();
+            bundle.putString("activityName", activityName);
+            bundle.putString("activityType", selectedActivityType);
+            bundle.putString("uniqueCode", uniqueCode);
+
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_chat) {
+                ChatScreenFragment chatFragment = new ChatScreenFragment();
+                chatFragment.setArguments(bundle);
+                selectedFragment = chatFragment;
+
+            } else if (itemId == R.id.navigation_map) {
+                MapViewFragment mapFragment = new MapViewFragment();
+                mapFragment.setArguments(bundle);
+                selectedFragment = mapFragment;
+
+            } else if (itemId == R.id.navigation_emergency) {
+                EmergencyScreenFragment emergencyFragment = new EmergencyScreenFragment();
+                emergencyFragment.setArguments(bundle);
+                selectedFragment = emergencyFragment;
             }
+
+            if (selectedFragment != null) {
+                loadFragment(selectedFragment);
+            }
+            return true;
         });
+    }
+
+    // Method to load fragments
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_groupchat, fragment)
+                .commit();
     }
 
     // Inflate the menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_menu, menu);  // Inflate the toolbar menu
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);  // Inflate the toolbar menu
         return true;
     }
 
@@ -93,100 +100,20 @@ public class GroupChatMain extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menuGroupDetails) {
-            // Handle Open Screen 1 (functionality not added yet)
+            Intent intent = new Intent(GroupChatMain.this, GroupDetailsScreen.class);
+            intent.putExtra("activityName", activityName);
+            intent.putExtra("activityType", selectedActivityType); // Make sure you are passing activity type
+            intent.putExtra("uniqueCode", uniqueCode);
+            startActivity(intent);
             return true;
         } else if (id == R.id.menuAddMembers) {
-            // Navigate to AddMemberScreen
             Intent intent = new Intent(GroupChatMain.this, AddMemberScreen.class);
             intent.putExtra("activityName", activityName);
             intent.putExtra("activityType", selectedActivityType); // Pass the selected activity type
-
             startActivity(intent);
-
-            return true;
-        } else if (id == R.id.action_open_screen3) {
-            // Handle Open Screen 3 (functionality not added yet)
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    private void showAddMessageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add Custom Message");
-
-        final EditText input = new EditText(this);
-        input.setHint("Enter your message here");
-        builder.setView(input);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String customMessage = input.getText().toString();
-                if (!customMessage.isEmpty()) {
-                    customMessages.add(customMessage);
-                    addMessageButton(customMessage);
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    private void showLimitReachedDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Limit Reached")
-                .setMessage("You can only add up to " + MAX_CUSTOM_MESSAGES + " custom messages.")
-                .setPositiveButton("OK", null)
-                .show();
-    }
-
-    private void addMessageButton(final String message) {
-        final Button button = new Button(this);
-        button.setText(message);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chatMessages.add(message);
-                chatAdapter.notifyDataSetChanged();  // Refresh RecyclerView
-            }
-        });
-
-        // Long click listener to remove the message
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showRemoveMessageDialog(button, message);
-                return true;  // Returning true to indicate the long-click action was handled
-            }
-        });
-
-        // Add button to your LinearLayout
-        LinearLayout messageContainer = findViewById(R.id.messageContainer);
-        messageContainer.addView(button);
-    }
-
-    private void showRemoveMessageDialog(final Button button, final String message) {
-        new AlertDialog.Builder(this)
-                .setTitle("Remove Custom Message")
-                .setMessage("Do you want to remove this custom message?")
-                .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        customMessages.remove(message);  // Remove from customMessages list
-                        LinearLayout messageContainer = findViewById(R.id.messageContainer);
-                        messageContainer.removeView(button);  // Remove the button from the UI
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
     }
 }

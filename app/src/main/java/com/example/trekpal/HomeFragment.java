@@ -62,6 +62,9 @@ public class HomeFragment extends Fragment implements ActivityAdapter.OnActivity
             Log.d("HomeFragment", "Unique Code: " + uniqueCode);
         }
 
+        // Initialize location tracking
+        LocationTracker locationTracker = new LocationTracker(getContext(), uniqueCode);
+
         // Show ProgressBar before loading data
         progressBar.setVisibility(View.VISIBLE);
 

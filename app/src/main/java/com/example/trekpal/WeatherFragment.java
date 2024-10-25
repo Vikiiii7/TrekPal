@@ -139,8 +139,7 @@ public class WeatherFragment extends Fragment {
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         List<Address> addresses;
 
-        try {
-            addresses = geocoder.getFromLocationName(locationName, 1);
+        try {addresses = geocoder.getFromLocationName(locationName, 1);
             if (addresses == null || addresses.isEmpty()) {
                 Toast.makeText(getContext(), "Unable to fetch location coordinates", Toast.LENGTH_SHORT).show();
                 return;

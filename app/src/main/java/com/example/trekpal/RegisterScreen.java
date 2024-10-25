@@ -93,8 +93,29 @@ public class RegisterScreen extends AppCompatActivity {
         String address = etAddress.getText().toString().trim();
         String gender = spinnerGender.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(fullname) || TextUtils.isEmpty(username) || TextUtils.isEmpty(password) || TextUtils.isEmpty(email) || TextUtils.isEmpty(phoneNum) || TextUtils.isEmpty(address) || gender.equals("Select Gender")) {
+        if (TextUtils.isEmpty(fullname) || TextUtils.isEmpty(username) ||
+                TextUtils.isEmpty(password) || TextUtils.isEmpty(email) ||
+                TextUtils.isEmpty(phoneNum) || TextUtils.isEmpty(address) ||
+                gender.equals("Select Gender")) {
             Toast.makeText(RegisterScreen.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //check input validation for email
+        if (!isValidEmail(email)) {
+            Toast.makeText(RegisterScreen.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //check input validation for Username, make it not too long
+        if (username.length() > 10) {
+            Toast.makeText(RegisterScreen.this, "Username must be 10 characters or less", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //check input validation for phone number to have country code, used for sending SMS
+        if (!isValidPhoneNumber(phoneNum)) {
+            Toast.makeText(RegisterScreen.this, "Phone number must include country code", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -133,6 +154,18 @@ public class RegisterScreen extends AppCompatActivity {
             Toast.makeText(RegisterScreen.this, "Error checking email: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
+
+    private boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
+
+    private boolean isValidPhoneNumber(String phoneNum) {
+        // Example regex for validating phone number format with country code
+        String phonePattern = "\\+[0-9]{1,3}-[0-9]{6,14}";
+        return phoneNum.matches(phonePattern);
+    }
+
 
     private String generateUniqueCode() {
         Random random = new Random();

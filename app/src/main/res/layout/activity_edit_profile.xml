@@ -5,197 +5,226 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/group_2"
-    tools:context=".EditProfile">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/group_2"
+        tools:context=".EditProfile">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="412dp"
-        android:layout_height="204dp"
-        android:layout_marginBottom="26dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/updUsername"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="412dp"
+            android:layout_height="204dp"
+            android:layout_marginBottom="27dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/profilePictureLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView12"
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="wrap_content"
+                android:layout_height="194dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/group_23" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/goBackBtn"
             android:layout_width="wrap_content"
-            android:layout_height="194dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/group_23" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:backgroundTint="#00FFFFFF"
+            android:contentDescription="backbtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/arrow_back" />
 
-    </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/goBackBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:backgroundTint="#00FFFFFF"
-        android:contentDescription="backbtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_back" />
+        <LinearLayout
+            android:id="@+id/profilePictureLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="231dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/updUsername"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="230dp"
-        android:layout_marginEnd="101dp"
-        android:layout_marginBottom="588dp"
-        android:background="@drawable/rectangle_17"
-        android:ems="10"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Update Username"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+            <!-- Profile Picture Display -->
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@android:drawable/ic_menu_gallery" />
 
-    <EditText
-        android:id="@+id/updFullname"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="49dp"
-        android:background="@drawable/rectangle_17"
-        android:ems="10"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Update Fullname"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updUsername" />
+            <!-- Button to Upload Profile Picture -->
+            <Button
+                android:id="@+id/uploadPictureBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Upload Profile Picture" />
+        </LinearLayout>
 
-    <EditText
-        android:id="@+id/updPassword"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="49dp"
-        android:background="@drawable/rectangle_17"
-        android:ems="10"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Update Password"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updFullname" />
+        <EditText
+            android:id="@+id/updUsername"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="101dp"
+            android:layout_marginTop="532dp"
+            android:layout_marginEnd="101dp"
+            android:background="@drawable/rectangle_17"
+            android:ems="10"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Update Username"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/updEmail"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="49dp"
-        android:background="@drawable/rectangle_17"
-        android:ems="10"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Update Email"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updPassword" />
+        <EditText
+            android:id="@+id/updFullname"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="49dp"
+            android:background="@drawable/rectangle_17"
+            android:ems="10"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Update Fullname"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updUsername" />
 
-    <EditText
-        android:id="@+id/updAddress"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="49dp"
-        android:background="@drawable/rectangle_17"
-        android:ems="10"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Update Address"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updEmail" />
+        <EditText
+            android:id="@+id/updPassword"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="49dp"
+            android:background="@drawable/rectangle_17"
+            android:ems="10"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Update Password"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updFullname" />
 
-    <EditText
-        android:id="@+id/updGender"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="49dp"
-        android:background="@drawable/rectangle_17"
-        android:editable="false"
-        android:ems="10"
-        android:enabled="false"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Gender"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updAddress" />
+        <EditText
+            android:id="@+id/updEmail"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="49dp"
+            android:background="@drawable/rectangle_17"
+            android:ems="10"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Update Email"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updPassword" />
 
-    <EditText
-        android:id="@+id/updPhoneNum"
-        android:layout_width="313dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="49dp"
-        android:background="@drawable/rectangle_17"
-        android:ems="10"
-        android:fontFamily="@font/manrope_bold"
-        android:hint="Update Phone Number"
-        android:inputType="text"
-        android:padding="25dp"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updGender" />
+        <EditText
+            android:id="@+id/updAddress"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="49dp"
+            android:background="@drawable/rectangle_17"
+            android:ems="10"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Update Address"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updEmail" />
 
-    <ImageButton
-        android:id="@+id/updBtnProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="101dp"
-        android:backgroundTint="#00FFFFFF"
-        android:contentDescription="updProfileBtn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updPhoneNum"
-        app:srcCompat="@drawable/group_24" />
+        <EditText
+            android:id="@+id/updGender"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="49dp"
+            android:background="@drawable/rectangle_17"
+            android:editable="false"
+            android:ems="10"
+            android:enabled="false"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Gender"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updAddress" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/updPhoneNum"
+            android:layout_width="313dp"
+            android:layout_height="73dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="49dp"
+            android:background="@drawable/rectangle_17"
+            android:ems="10"
+            android:fontFamily="@font/manrope_bold"
+            android:hint="Update Phone Number"
+            android:inputType="text"
+            android:padding="25dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updGender" />
+
+        <ImageButton
+            android:id="@+id/updBtnProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="101dp"
+            android:backgroundTint="#00FFFFFF"
+            android:contentDescription="updProfileBtn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updPhoneNum"
+            app:srcCompat="@drawable/group_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

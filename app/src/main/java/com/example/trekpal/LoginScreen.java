@@ -26,6 +26,9 @@ public class LoginScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
+        // Check if user is already logged in
+        checkIfLoggedIn();
+
         db = FirebaseFirestore.getInstance();
 
         etUsername = findViewById(R.id.etUname);
@@ -49,6 +52,21 @@ public class LoginScreen extends AppCompatActivity {
         });
     }
 
+    private void checkIfLoggedIn() {
+        SharedPreferences prefs = getSharedPreferences("TrekPalPrefs", MODE_PRIVATE);
+        String uniqueCode = prefs.getString("uniqueCode", null);
+        String username = prefs.getString("username", null);
+
+        if (uniqueCode != null && username != null) {
+            // User is already logged in, redirect to MainActivity
+            Intent intent = new Intent(LoginScreen.this, MainActivity.class);
+            intent.putExtra("uniqueCode", uniqueCode);
+            intent.putExtra("username", username);
+            startActivity(intent);
+            finish(); // Close the login activity
+        }
+    }
+
     private void loginUser() {
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
@@ -66,6 +84,12 @@ public class LoginScreen extends AppCompatActivity {
                 QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
                 String uniqueCode = document.getId(); // Get the unique code (document ID)
 
+                // Store user info in SharedPreferences
+                SharedPreferences prefs = getSharedPreferences("TrekPalPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("uniqueCode", uniqueCode);
+                editor.putString("username", username);
+                editor.apply(); // Save changes
 
                 // Pass the unique code and username to the main activity
                 Intent intent = new Intent(LoginScreen.this, MainActivity.class);

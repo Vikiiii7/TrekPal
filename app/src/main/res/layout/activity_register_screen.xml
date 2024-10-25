@@ -141,7 +141,7 @@
       android:background="@drawable/rectangle_2"
       android:ems="10"
       android:fontFamily="@font/manrope_semibold"
-      android:hint="Phone Number :"
+      android:hint="Phone (with country code):"
       android:inputType="phone"
       android:padding="15dp"
       android:textColor="#000000"
@@ -149,6 +149,7 @@
       app:layout_constraintEnd_toEndOf="@+id/imageView6"
       app:layout_constraintStart_toStartOf="@+id/imageView6"
       app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+
 
   <Spinner
       android:id="@+id/spinnerGender"

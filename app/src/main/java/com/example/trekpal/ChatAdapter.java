@@ -12,10 +12,13 @@ import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
-    private ArrayList<String> chatMessages;
+    private ArrayList<ChatMessage> chatMessages;
+    private String currentUserUniqueCode;  // Unique code for logged-in user
 
-    public ChatAdapter(ArrayList<String> chatMessages) {
+    // Updated constructor to accept currentUserUniqueCode
+    public ChatAdapter(ArrayList<ChatMessage> chatMessages, String currentUserUniqueCode) {
         this.chatMessages = chatMessages;
+        this.currentUserUniqueCode = currentUserUniqueCode;
     }
 
     @NonNull
@@ -28,9 +31,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        String message = chatMessages.get(position);
-        holder.messageTextView.setText(message);
+        ChatMessage chatMessage = chatMessages.get(position);
+        holder.messageTextView.setText(chatMessage.getMessageText());
+        holder.timestampTextView.setText(chatMessage.getTimestamp());
+
+        // Check if the message is from the logged-in user
+        if (chatMessage.getSenderUniqueCode().equals(currentUserUniqueCode)) {
+            // Set background for logged-in user's messages
+            holder.messageTextView.setBackgroundResource(R.drawable.logged_in_user_message_bg);
+        } else {
+            // Set background for other users' messages
+            holder.messageTextView.setBackgroundResource(R.drawable.other_user_message_bg);
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -39,10 +53,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     static class ChatViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
+        TextView timestampTextView;
 
         ChatViewHolder(View itemView) {
             super(itemView);
             messageTextView = itemView.findViewById(R.id.messageTextView);
+            timestampTextView = itemView.findViewById(R.id.timestampTextView);
         }
     }
 }

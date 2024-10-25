@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/markerBackground"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/group_2"
+        android:scaleType="centerCrop"/>
+
+    <!-- Profile picture (circular image inside the frame) -->
+    <ImageView
+        android:id="@+id/markerImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:background="@drawable/circular_background"/> <!-- Add a circular background for the image -->
+
+</FrameLayout>
