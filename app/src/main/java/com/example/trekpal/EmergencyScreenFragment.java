@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -78,9 +80,6 @@ public class EmergencyScreenFragment extends Fragment {
         if (username == null || username.isEmpty()) {
             fetchUsernameFromFirestore();
         }
-
-        // Create notification channel
-        createNotificationChannel();
 
     }
 
@@ -150,59 +149,50 @@ public class EmergencyScreenFragment extends Fragment {
                 });
     }
 
-    // Method to create a notification channel
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            channel.setDescription(CHANNEL_DESC);
-            channel.enableLights(true);
-            channel.enableVibration(true);
-            channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), null);
-
-            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-    }
-
 
     private void sendSOSToFirestore(double latitude, double longitude) {
-        String sosMessage = username + " is in Danger, Need Help ASAP!";
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        // Ensure activityName and other details are available
+        if (activityName == null || username == null || uniqueCode == null) {
+            Log.e("EmergencyScreen", "Activity details not set. Ensure arguments are passed correctly.");
+            return;
+        }
 
+        // Format the current time
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String locationDescription = "Near " + getApproximateLocation(latitude, longitude);
+
+        // Construct the SOS alert message and details separately
+        String sosAlert = "Trekpal:SOS Alert! " + username + " is in danger " + locationDescription +
+                ". Time: " + currentTime + ". Please assist immediately!";
+
+        // Build the SOS data map
         Map<String, Object> sosData = new HashMap<>();
-        sosData.put("message", sosMessage);
+        sosData.put("message", sosAlert); // Store the full message for Firestore
         sosData.put("senderUsername", username);
         sosData.put("uniqueCode", uniqueCode);
         sosData.put("latitude", latitude);
         sosData.put("longitude", longitude);
-        sosData.put("locationDescription", "Near " + getApproximateLocation(latitude, longitude));
+        sosData.put("locationDescription", locationDescription);
         sosData.put("timeSent", currentTime);
-        sosData.put("isSOS", true);
 
+        // Reference to Firestore location for messages
         CollectionReference messagesRef = firestore.collection("activityType")
                 .document(selectedActivityType)
                 .collection("activities")
                 .document(activityName)
-                .collection("messages");
+                .collection("sosalerts");
 
+        // Add SOS message to Firestore and send SMS notifications
         messagesRef.add(sosData)
                 .addOnSuccessListener(documentReference -> {
                     Log.d("EmergencyScreen", "SOS Message sent successfully");
-                    sendSMSNotificationToGroupMembers(sosMessage);
-
-
+                    sendSMSNotificationToGroupMembers(sosAlert); // Send separate messages
                 })
                 .addOnFailureListener(e -> Log.e("EmergencyScreen", "Error sending SOS message", e));
     }
 
-    private void sendSMSNotificationToGroupMembers(String sosMessage) {
-        // Assuming group members are stored under activityType -> activities -> activityName -> groupmembers
+    private void sendSMSNotificationToGroupMembers(String sosAlert) {
+
         CollectionReference groupMembersRef = firestore.collection("activityType")
                 .document(selectedActivityType)
                 .collection("activities")
@@ -214,13 +204,15 @@ public class EmergencyScreenFragment extends Fragment {
                 for (DocumentSnapshot document : task.getResult()) {
                     String memberUniqueCode = document.getId();
 
-                    // Fetch user's phone number from newUsers collection
+
                     DocumentReference userRef = firestore.collection("newUsers").document(memberUniqueCode);
                     userRef.get().addOnSuccessListener(userDocument -> {
                         if (userDocument.exists()) {
                             String phoneNum = userDocument.getString("phoneNum");
                             if (phoneNum != null) { // Ensure phoneNum is not null
-                                sendSMS(phoneNum, sosMessage);
+
+                                sendSMS(phoneNum, sosAlert); // Send the SOS alert message
+                                // Send the SOS details message
                             } else {
                                 Log.e("EmergencyScreen", "Phone number is null for uniqueCode: " + memberUniqueCode);
                             }
@@ -234,8 +226,6 @@ public class EmergencyScreenFragment extends Fragment {
             }
         });
     }
-
-
 
 
     private void sendSMS(String phoneNumber, String message) {
@@ -287,7 +277,7 @@ public class EmergencyScreenFragment extends Fragment {
                     detailedLocation.append(postalCode).append(", ");
                 }
                 if (adminArea != null) {
-                    detailedLocation.append(adminArea).append(", ");
+                    detailedLocation.append(adminArea).append(" ");
                 }
 
                 // Remove trailing commas and whitespace if any

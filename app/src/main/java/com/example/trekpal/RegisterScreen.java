@@ -162,7 +162,7 @@ public class RegisterScreen extends AppCompatActivity {
 
     private boolean isValidPhoneNumber(String phoneNum) {
         // Example regex for validating phone number format with country code
-        String phonePattern = "\\+[0-9]{1,3}-[0-9]{6,14}";
+        String phonePattern = "^[+]{1}[0-9]{1,4}[0-9]{6,14}$";
         return phoneNum.matches(phonePattern);
     }
 

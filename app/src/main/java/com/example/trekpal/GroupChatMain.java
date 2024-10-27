@@ -2,6 +2,7 @@ package com.example.trekpal;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -25,6 +26,11 @@ public class GroupChatMain extends AppCompatActivity {
         activityName = getIntent().getStringExtra("activityName");
         selectedActivityType = getIntent().getStringExtra("activityType");
         uniqueCode = getIntent().getStringExtra("uniqueCode");
+
+        // Log the received values to check if they are null or contain expected data
+        Log.d("GroupChatMain", "Activity Name: " + activityName);
+        Log.d("GroupChatMain", "Selected Activity Type: " + selectedActivityType);
+        Log.d("GroupChatMain", "Unique Code: " + uniqueCode);
 
         // Set up the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -112,7 +118,15 @@ public class GroupChatMain extends AppCompatActivity {
             intent.putExtra("activityType", selectedActivityType); // Pass the selected activity type
             startActivity(intent);
             return true;
+        } else if (id == R.id.menuSOSAlerts) {
+            Intent intent = new Intent(GroupChatMain.this, SOSAlertScreen.class);
+            intent.putExtra("activityName", activityName);
+            intent.putExtra("activityType", selectedActivityType); // Pass the selected activity type
+            intent.putExtra("uniqueCode", uniqueCode);
+            startActivity(intent);
+            return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

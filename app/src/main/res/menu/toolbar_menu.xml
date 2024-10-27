@@ -11,7 +11,7 @@
         android:title="Add Group Members"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_open_screen3"
-        android:title="Open Screen 3"
+        android:id="@+id/menuSOSAlerts"
+        android:title="SOS Alerts"
         app:showAsAction="never" />
 </menu>

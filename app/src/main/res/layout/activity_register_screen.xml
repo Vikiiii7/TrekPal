@@ -141,7 +141,7 @@
       android:background="@drawable/rectangle_2"
       android:ems="10"
       android:fontFamily="@font/manrope_semibold"
-      android:hint="Phone (with country code):"
+      android:hint="Phone (+60)XXX XXXXX:"
       android:inputType="phone"
       android:padding="15dp"
       android:textColor="#000000"
